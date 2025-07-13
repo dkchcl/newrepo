@@ -18,3 +18,11 @@ resource "azurerm_storage_account" "name1" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
 }
+
+resource "azurerm_storage_account" "name3" {
+  name                     = "examplestorageacct3"
+  resource_group_name      = azurerm_resource_group.name.name
+  location                 = azurerm_resource_group.name.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
