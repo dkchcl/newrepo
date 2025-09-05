@@ -1,7 +1,6 @@
 variable "rg_name" {
   description = "The name of the resource group"
   type        = string
-  default     = "rg-vmss"
 }
 
 variable "location" {
@@ -33,25 +32,27 @@ variable "subnet_name" {
 variable "lb_name" {
   description = "The name of the load balancer"
   type        = string
-  default     = "lb-vmss"
 }
+
 variable "admin_username" {
   description = "The admin username for the virtual machines"
   type        = string
-  default     = "azureuser"
-  
 }
 
 variable "admin_password" {
   description = "The admin password for the virtual machines"
-  type        = string
-  default     = "P@ssw0rd1234"
-  
+  type        = string 
 }
 
 variable "backend_address_pool_name" {
   description = "The name of the backend address pool"
-  type        = string
-  default     = "lb-backend-pool-001"
-  
+  type        = string 
 }
+
+variable "nsg_name" {
+  description = "The name of the Network Security Group"
+  type        = string
+}
+
+
+

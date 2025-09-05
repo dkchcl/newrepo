@@ -21,3 +21,9 @@ variable "subnet_name" {
   type        = string
   default     = "subnet-vmss"
 }
+
+variable "address_prefixes" {
+  description = "The address prefixes that are used the subnet"
+  type        = list(string)
+}
+

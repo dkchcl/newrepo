@@ -7,6 +7,6 @@ resource "azurerm_lb_rule" "http_rule" {
   backend_port                   = 80
   frontend_ip_configuration_name = var.frontend_ip_configuration_name
   backend_address_pool_ids       = [data.azurerm_lb_backend_address_pool.bpepool.id]
-  # probe_id                       = azurerm_lb_probe.http.id
+  probe_id                       = var.probe_id
 }
 

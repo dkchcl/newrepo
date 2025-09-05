@@ -30,3 +30,16 @@ variable "backend_address_pool_name" {
   default     = "lb-backend-pool-001"
   
 }
+
+variable "lb_probe_name" {
+  description = "The name of the load balancer probe"
+  type        = string
+
+}
+
+variable "probe_id" {
+  description = "The ID of the load balancer probe"
+  type        = string
+  
+}
+
