@@ -65,3 +65,15 @@ variable "request_routing_rule_name" {
   description = "The name of the request routing rule"
   type        = string  
 }
+
+variable "backend_vm_private_ips" {
+  description = "List of private IP addresses of VM NICs to add to backend pool"
+  type        = list(string)
+  default     = []
+}
+
+variable "backend_vm_names" {
+  description = "List of VM names to add to backend pool (optional, for reference)"
+  type        = list(string)
+  default     = []
+}

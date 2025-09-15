@@ -23,4 +23,25 @@ resource "azurerm_linux_virtual_machine" "vm" {
     sku       = var.image_sku
     version   = var.image_version
   }
+
+    # 🚀 Nginx Install script (cloud-init)
+custom_data = base64encode(<<EOF
+#!/bin/bash
+sudo apt-get update -y
+sudo apt-get install -y nginx
+sudo systemctl enable nginx
+sudo systemctl start nginx
+
+cat <<EOT | sudo tee /var/www/html/index.html
+<h1 style="color: #1E90FF; font-weight: bold; text-align: center;">
+ 🚀 Welcome to Nginx on VM Scale Set 🌍
+</h1>
+
+<h2 style="color: #FF4500; font-weight: bold; text-align: center;">
+ 🔥 Keep Learning, Keep Building & Keep Automating – Welcome to the DevOps World! ⚙️💻
+</h2>
+EOT
+EOF
+)
+
 }

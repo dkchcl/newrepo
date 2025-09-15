@@ -20,7 +20,7 @@ variable "ip_configuration_name" {
   type        = string  
 }
 
-variable "subnet_name" {
+variable "bsubnet_name" {
   description = "The ID of the subnet"
   type        = string    
 }

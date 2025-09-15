@@ -1,4 +1,4 @@
-resource "network_interface" "nic" {
+resource "azurerm_network_interface" "nic" {
   name                = var.nic_name
   location            = var.location
   resource_group_name = var.rg_name
