@@ -77,3 +77,13 @@ variable "backend_vm_names" {
   type        = list(string)
   default     = []
 }
+
+variable "vm1_nic_name" {
+  description = "The name of the network interface"
+  type        = string 
+}
+
+variable "vm2_nic_name" {
+  description = "The name of the network interface"
+  type        = string 
+}

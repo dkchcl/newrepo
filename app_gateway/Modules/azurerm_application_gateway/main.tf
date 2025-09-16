@@ -1,23 +1,19 @@
-# since these variables are re-used - a locals block makes this more maintainable
-# locals {
-#   backend_address_pool_name      = "${azurerm_virtual_network.vnet.name}-beap"
-#   frontend_port_name             = "${azurerm_virtual_network.example.name}-feport"
-#   frontend_ip_configuration_name = "${azurerm_virtual_network.example.name}-feip"
-#   http_setting_name              = "${azurerm_virtual_network.example.name}-be-htst"
-#   listener_name                  = "${azurerm_virtual_network.example.name}-httplstn"
-#   request_routing_rule_name      = "${azurerm_virtual_network.example.name}-rqrt"
-#   redirect_configuration_name    = "${azurerm_virtual_network.example.name}-rdrcfg"
-# }
-
 resource "azurerm_application_gateway" "appgw" {
   name                = var.application_gateway_name
   resource_group_name = var.rg_name
   location            = var.location
 
+  enable_http2 = true
+
   sku {
-    name     = "Standard_v2"
-    tier     = "Standard_v2"
-    capacity = 2
+    name = "Standard_v2"
+    tier = "Standard_v2"
+    # capacity = 2
+  }
+
+  autoscale_configuration {
+    min_capacity = 2
+    max_capacity = 10
   }
 
   gateway_ip_configuration {
@@ -37,13 +33,14 @@ resource "azurerm_application_gateway" "appgw" {
 
   backend_address_pool {
     name = var.backend_address_pool_name
-    
+
+    ip_addresses = [data.azurerm_network_interface.nic1.private_ip_address, data.azurerm_network_interface.nic2.private_ip_address]
   }
 
   backend_http_settings {
     name                  = var.http_setting_name
     cookie_based_affinity = "Disabled"
-    path                  = "/path1/"
+    path                  = "/"
     port                  = 80
     protocol              = "Http"
     request_timeout       = 60
@@ -54,6 +51,7 @@ resource "azurerm_application_gateway" "appgw" {
     frontend_ip_configuration_name = var.frontend_ip_configuration_name
     frontend_port_name             = var.frontend_port_name
     protocol                       = "Http"
+    host_name                      = "infraautomate.store"
   }
 
   request_routing_rule {
@@ -65,3 +63,6 @@ resource "azurerm_application_gateway" "appgw" {
     backend_http_settings_name = var.http_setting_name
   }
 }
+
+
+

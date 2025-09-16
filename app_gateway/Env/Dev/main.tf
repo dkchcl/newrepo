@@ -66,10 +66,11 @@ module "nsg" {
   location   = "West Europe"
 }
 
-module "nic1" {
-  depends_on            = [module.subnet1]
+module "nic" {
+  depends_on            = [module.subnet1, module.vnet]
   source                = "../../Modules/azurerm_network_interface"
-  nic_name              = "vm-nic-dev-001"
+  nic_name1             = "vm-nic-dev-001"
+  nic_name2             = "vm-nic-dev-002"
   rg_name               = "rg-dev-weu-001"
   location              = "West Europe"
   subnet_name           = "snet-dev-weu-001"
@@ -77,47 +78,31 @@ module "nic1" {
   ip_configuration_name = "vm-ip-config"
 }
 
-module "nic2" {
-  depends_on            = [module.subnet1]
-  source                = "../../Modules/azurerm_network_interface"
-  nic_name              = "vm-nic-dev-002"
-  rg_name               = "rg-dev-weu-001"
-  location              = "West Europe"
-  subnet_name           = "snet-dev-weu-001"
-  vnet_name             = "vnet-dev-weu-001"
-  ip_configuration_name = "vm-ip-config"
-}
+# module "bastion" {
+#   depends_on            = [module.pip1, module.subnet3]
+#   source                = "../../Modules/azurerm_bastion_host"
+#   bastion_name          = "bastion-dev-weu-001"
+#   rg_name               = "rg-dev-weu-001"
+#   location              = "West Europe"
+#   bsubnet_name          = "AzureBastionSubnet"
+#   vnet_name             = "vnet-dev-weu-001"
+#   pip_name              = "bastion-pip-dev-001"
+#   ip_configuration_name = "bastion-ip-config"
+# }
 
-module "bastion" {
-  depends_on            = [module.pip1]
-  source                = "../../Modules/azurerm_bastion_host"
-  bastion_name          = "bastion-dev-weu-001"
-  rg_name               = "rg-dev-weu-001"
-  location              = "West Europe"
-  bsubnet_name          = "AzureBastionSubnet"
-  vnet_name             = "vnet-dev-weu-001"
-  pip_name              = "bastion-pip-dev-001"
-  ip_configuration_name = "bastion-ip-config"
-}
-
-module "nic_nsg_assoc1" {
-  depends_on = [module.nsg, module.nic1]
-  source     = "../../Modules/azurerm_nic_nsg_assoc"
-  rg_name    = "rg-dev-weu-001"
-  nic_name   = "vm-nic-dev-001"
-  nsg_name   = "nsg-dev-weu-001"
-}
-
-module "nic_nsg_assoc2" {
-  depends_on = [module.nsg, module.nic2]
-  source     = "../../Modules/azurerm_nic_nsg_assoc"
-  rg_name    = "rg-dev-weu-001"
-  nic_name   = "vm-nic-dev-002"
-  nsg_name   = "nsg-dev-weu-001"
+module "nic_sub_nsg_assoc" {
+  depends_on  = [module.nsg, module.nic, module.subnet2, module.vnet]
+  source      = "../../Modules/azurerm_nic_sub_nsg_assoc"
+  rg_name     = "rg-dev-weu-001"
+  nic_name1   = "vm-nic-dev-001"
+  nic_name2   = "vm-nic-dev-002"
+  nsg_name    = "nsg-dev-weu-001"
+  vnet_name   = "vnet-dev-weu-001"
+  subnet_name = "snet-dev-appgw-002"
 }
 
 module "vm1" {
-  depends_on                   = [module.nic1, module.nic_nsg_assoc1]
+  depends_on                   = [module.nic, module.nic_sub_nsg_assoc, module.subnet1, module.vnet]
   source                       = "../../Modules/azurerm_virtual_machine"
   vm_name                      = "vm1-dev-weu-001"
   rg_name                      = "rg-dev-weu-001"
@@ -135,7 +120,7 @@ module "vm1" {
 }
 
 module "vm2" {
-  depends_on                   = [module.nic2, module.nic_nsg_assoc2]
+  depends_on                   = [module.nic, module.nic_sub_nsg_assoc, module.subnet1, module.vnet]
   source                       = "../../Modules/azurerm_virtual_machine"
   vm_name                      = "vm2-dev-weu-001"
   rg_name                      = "rg-dev-weu-001"
@@ -153,7 +138,7 @@ module "vm2" {
 }
 
 module "appgw" {
-  depends_on                     = [module.pip2, module.vm1, module.vm2]
+  depends_on                     = [module.pip2, module.vm1, module.vm2, module.nic_sub_nsg_assoc]
   source                         = "../../Modules/azurerm_application_gateway"
   application_gateway_name       = "appgw-dev-weu-001"
   rg_name                        = "rg-dev-weu-001"
@@ -168,6 +153,8 @@ module "appgw" {
   subnet_name                    = "snet-dev-appgw-002"
   vnet_name                      = "vnet-dev-weu-001"
   pip_name                       = "appgw-pip-dev-001"
+  vm1_nic_name                   = "vm-nic-dev-001"
+  vm2_nic_name                   = "vm-nic-dev-002"
 }
 
 

@@ -10,10 +10,14 @@ variable "location" {
   
 }
 
-variable "nic_name" {
+variable "nic_name1" {
   description = "The name of the network interface"
-  type        = string
-  
+  type        = string 
+}
+
+variable "nic_name2" {
+  description = "The name of the network interface"
+  type        = string 
 }
 
 variable "ip_configuration_name" {
