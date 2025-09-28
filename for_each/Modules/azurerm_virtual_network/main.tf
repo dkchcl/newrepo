@@ -1,6 +1,8 @@
 resource "azurerm_virtual_network" "example" {
-  name                = "example-network"
-  address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+  for_each = var.vnet_name
+
+  name                = each.value.name
+  address_space       = each.value.address_space
+  location            = each.value.location
+  resource_group_name = each.value.resource_group_name
 }

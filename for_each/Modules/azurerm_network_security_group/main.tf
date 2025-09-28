@@ -1,7 +1,9 @@
-resource "azurerm_network_security_group" "example" {
-  name                = "acceptanceTestSecurityGroup1"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+resource "azurerm_network_security_group" "nsg" {
+  for_each = var.nsg_name
+
+  name                = each.value.name
+  location            = each.value.location
+  resource_group_name = each.value.resource_group_name
 
   security_rule {
     name                       = "test123"
@@ -13,9 +15,5 @@ resource "azurerm_network_security_group" "example" {
     destination_port_range     = "*"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
-  }
-
-  tags = {
-    environment = "Production"
   }
 }
